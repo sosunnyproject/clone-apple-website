@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			height: 500vh;
+			-ms-overflow-style: none;  /* Internet Explorer 10+ */
+    	scrollbar-width: none;  /* Firefox */
+		}
+		body::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+		body.before-load {
+			overflow-y: hidden;
+		}
+		.sample-img {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+		}
+	</style>
+</head>
+<body class="before-load">
+	<img class="sample-img" src="../video/zoomquilt/ezgif-frame-100.jpg">
+
+	<script>
+		const imgElem = document.querySelector('.sample-img');
+		const videoImages = [];
+		let totalImagesCount = 100;
+		let progress;
+		let currentFrame;
+
+		function setImages() {
+			for (let i = 0; i < totalImagesCount; i++) {
+				let imgElem = new Image();
+				imgElem.src = `../video/zoomquilt/ezgif-frame-${100 + i}.JPG`;
+				videoImages.push(imgElem);
+			}
+		}
+
+		let time = 0;
+		function init() {
+			document.body.classList.remove('before-load');
+			progress = 1;
+			let pause = false;
+			window.addEventListener('scroll', function (e) {
+				e.preventDefault();
+				// console.log(progress)
+				// console.log("rounded: ",  Math.round((totalImagesCount - 1) * progress))
+				if (progress < 0) progress = 0;
+				if (progress > 1) progress = 1;
+				pause = true;
+
+				currentFrame = Math.round((time - 1)*progress);
+				imgElem.src = videoImages[currentFrame].src;
+
+				progress = pageYOffset / (document.body.offsetHeight - window.innerHeight);
+
+			});
+
+		  function animate() {
+				  time++
+					console.log(time);
+					currentFrame = Math.round((time - 1)*progress);
+					console.log(currentFrame)
+					imgElem.src = videoImages[currentFrame].src;
+					if(time < 100 && !pause) window.requestAnimationFrame(animate)
+			}
+
+			console.log(imgElem)
+			if(imgElem) window.requestAnimationFrame(animate)
+		}
+
+		window.addEventListener('load', init);
+		setImages();
+	</script>
+</body>
+</html>
